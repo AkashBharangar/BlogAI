@@ -1,0 +1,30 @@
+# === Node.js dependencies ===
+node_modules/
+
+# === Environment files ===
+.env
+.env.*    # keep .env.example committed
+
+# === Build outputs ===
+dist/
+build/
+coverage/
+
+# === Logs ===
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# === IDE / Editor ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*.tmp
+*.orig
+
+# === OS-specific ===
+.DS_Store
+Thumbs.db
