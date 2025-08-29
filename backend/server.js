@@ -1,43 +1,45 @@
-import express from "express"
-import dotenv from "dotenv"
-import connectDB from "./database/db.js"
-import userRoute from "./routes/user.route.js"
-import blogRoute from "./routes/blog.route.js"
-import commentRoute from "./routes/comment.route.js"
-import aiRoute from "./routes/ai.route.js"
-import cookieParser from 'cookie-parser';
-import cors from "cors"
-import path from "path"
+import express from "express";
+import dotenv from "dotenv";
+import connectDB from "./database/db.js";
+import userRoute from "./routes/user.route.js";
+import blogRoute from "./routes/blog.route.js";
+import commentRoute from "./routes/comment.route.js";
+import aiRoute from "./routes/ai.route.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
-dotenv.config()
-const app = express()
+dotenv.config();
+const app = express();
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 
-
-// default middleware
+// middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.urlencoded({extended:true}));
-app.use(cors({
-  origin: "http://localhost:5173", // your frontend URL
-  credentials: true
-}));
+app.use(express.urlencoded({ extended: true }));
 
-const _dirname = path.resolve()
+// CORS (allow frontend Render/Netlify/Vercel URL)
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    credentials: true,
+  })
+);
 
-// apis
- app.use("/api/v1/user", userRoute)
- app.use("/api/v1/blog", blogRoute)
- app.use("/api/v1/comment", commentRoute)
- app.use("/api/v1/ai", aiRoute)
+// APIs
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/blog", blogRoute);
+app.use("/api/v1/comment", commentRoute);
+app.use("/api/v1/ai", aiRoute);
 
- app.use(express.static(path.join(_dirname,"/frontend/dist")));
- app.get("*", (_, res)=>{
-    res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"))
- });
-
-app.listen(PORT, ()=>{
-    console.log(`Server listen at port ${PORT}`);
-    connectDB()
-})
+// connect DB and start server
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`✅ Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ Database connection failed", err);
+    process.exit(1);
+  });
