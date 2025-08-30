@@ -27,6 +27,9 @@ app.use(
 );
 
 // APIs
+app.get("/", (req, res) => {
+  res.json("Up and running");
+})
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/blog", blogRoute);
 app.use("/api/v1/comment", commentRoute);
